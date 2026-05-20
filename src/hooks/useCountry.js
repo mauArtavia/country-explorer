@@ -8,9 +8,9 @@ export function useCountry() {
 
   useEffect(() => {
     fetchAllCountries()
-    .then(setCountries)
-    .catch(setError)
-    .finally(() => setLoading(false))
+      .then(setCountries)
+      .catch(setError)
+      .finally(() => setLoading(false))
   }, [])
 
   return { countries, loading, error }
