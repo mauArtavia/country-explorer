@@ -4,7 +4,7 @@ const BASE_EXCHANGE = 'https://api.exchangerate-api.com/v4/latest'
 
 // REST Countries
 export async function fetchAllCountries() {
-  const res = await fetch(`${BASE_COUNTRIES}/all?fields=name,flags,capital,population,area,region,subregion,languages,currencies,latlng,cca2`)
+  const res = await fetch(`${BASE_COUNTRIES}/all?fields=name,flags,capital,population,area,region,subregion,currencies,latlng,cca2`)
   if (!res.ok) throw new Error('Error fetching countries')
   return res.json()
 }
