@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCountry } from '../hooks/useCountry'
 import { useVisited } from '../hooks/useVisited'
+import { useDebounce } from '../hooks/useDebounce'
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
@@ -12,19 +14,31 @@ export function Home() {
   const { visited } = useVisited()
   const [query, setQuery]   = useState('')
   const [region, setRegion] = useState('All')
+  const [sortBy, setSortBy] = useState('name')
   const navigate = useNavigate()
 
+  const debouncedQuery = useDebounce(query, 200)
+
   const filtered = useMemo(() => {
-    return countries.filter(c => {
+    const result = countries.filter(c => {
       const matchRegion = region === 'All' || c.region === region
-      const q = query.toLowerCase()
+      const q = debouncedQuery.toLowerCase()
       const matchQuery =
         c.name.common.toLowerCase().includes(q) ||
         c.capital?.[0]?.toLowerCase().includes(q) ||
         c.region.toLowerCase().includes(q)
       return matchRegion && matchQuery
     })
-  }, [countries, query, region])
+
+    return result.sort((a, b) => {
+      if (sortBy === 'name')       return a.name.common.localeCompare(b.name.common)
+      if (sortBy === 'population') return b.population - a.population
+      if (sortBy === 'area')       return (b.area ?? 0) - (a.area ?? 0)
+      return 0
+    })
+  }, [countries, debouncedQuery, region, sortBy])
+
+  const { visible, hasMore, loaderRef } = useInfiniteScroll(filtered, 40)
 
   if (error) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: 'var(--text-3)', fontSize: '13px' }}>
@@ -139,7 +153,30 @@ export function Home() {
       {/* Controls */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
         <SearchBar value={query} onChange={setQuery} onClear={() => setQuery('')} />
-        <RegionFilter active={region} onChange={setRegion} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          <RegionFilter active={region} onChange={setRegion} />
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            style={{
+              background: 'var(--surface)',
+              border: '0.5px solid var(--border)',
+              borderRadius: '4px',
+              padding: '4px 12px',
+              fontSize: '10px',
+              fontFamily: "'IBM Plex Mono', monospace",
+              color: 'var(--text-3)',
+              cursor: 'pointer',
+              outline: 'none',
+              flexShrink: 0,
+              letterSpacing: '0.5px',
+            }}
+          >
+            <option value="name">name A→Z</option>
+            <option value="population">population</option>
+            <option value="area">area</option>
+          </select>
+        </div>
       </div>
 
       {/* Grid */}
@@ -150,20 +187,42 @@ export function Home() {
               height: '200px',
               borderRadius: '8px',
               background: 'var(--surface)',
-              animation: 'pulse 1.5s ease-in-out infinite',
+              opacity: 0.6,
             }} />
           ))}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
-          {filtered.map(country => (
-            <CountryCard
-              key={country.cca2}
-              country={country}
-              onClick={() => navigate(`/country/${country.cca2}`)}
-            />
-          ))}
-        </div>
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
+            {visible.map(country => (
+              <CountryCard
+                key={country.cca2}
+                country={country}
+                onClick={() => navigate(`/country/${country.cca2}`)}
+              />
+            ))}
+          </div>
+          {hasMore && (
+            <div
+              ref={loaderRef}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+                gap: '12px',
+                marginTop: '12px',
+              }}
+            >
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} style={{
+                  height: '200px',
+                  borderRadius: '8px',
+                  background: 'var(--surface)',
+                  opacity: 0.4,
+                }} />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
     </div>
