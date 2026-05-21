@@ -26,6 +26,6 @@
 
 ## v1.4 · Extra
 
-- [ ] **Compartir país** — botón en `CountryDetail` que copia la URL al clipboard. Un solo `navigator.clipboard.writeText(window.location.href)`.
-- [ ] **Estadísticas de Visited** — en la página Visited, mostrar total de regiones cubiertas y porcentaje del mundo visitado (`visited.length / 250 * 100`).
-- [ ] **PWA** — agregar `vite-plugin-pwa` para que la app sea instalable en móvil y funcione offline con los datos ya cargados cacheados.
+- [X] **Compartir país** — botón en `CountryDetail` que copia la URL al clipboard. Un solo `navigator.clipboard.writeText(window.location.href)`.
+- [X] **Estadísticas de Visited** — en la página Visited, mostrar total de regiones cubiertas y porcentaje del mundo visitado (`visited.length / 250 * 100`).
+- [X] **PWA** — agregar `vite-plugin-pwa` para que la app sea instalable en móvil y funcione offline con los datos ya cargados cacheados.
