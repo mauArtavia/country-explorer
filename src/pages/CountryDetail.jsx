@@ -7,6 +7,7 @@ import { fetchCountryByCode } from '../services/api'
 import { ArrowLeft, Wind, CheckCircle, Circle } from 'lucide-react'
 import { CountryMap } from '../components/CountryMap'
 import { BorderCountries } from '../components/BorderCountries'
+import { SkeletonDetailPage } from '../components/Skeleton'
 
 function formatPopulation(n) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
@@ -66,22 +67,6 @@ function SectionLabel({ children }) {
   )
 }
 
-function LoadingSkeleton() {
-  return (
-    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '40px 24px' }}>
-      {[16, 200, 40, 20, 100, 120].map((h, i) => (
-        <div key={i} style={{
-          height: `${h}px`,
-          borderRadius: '6px',
-          background: 'var(--surface)',
-          marginBottom: '16px',
-          opacity: 0.6,
-        }} />
-      ))}
-    </div>
-  )
-}
-
 export function CountryDetail() {
   const { code } = useParams()
   const navigate  = useNavigate()
@@ -106,7 +91,7 @@ export function CountryDetail() {
   const { rates,   loading: eLoading } = useExchange(currencyCode)
   const { isVisited, addVisited, removeVisited } = useVisited()
 
-  if (loading) return <LoadingSkeleton />
+  if (loading) return <SkeletonDetailPage />
   if (error) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: 'var(--text-3)', fontSize: '13px' }}>
       Country not found.
@@ -247,8 +232,10 @@ export function CountryDetail() {
       </div>
 
       {/* Weather + Exchange */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-
+      <div
+        className="mobile-stack"
+        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}
+      >
         {/* Weather */}
         <div style={widget}>
           <SectionLabel>Weather now</SectionLabel>
@@ -341,7 +328,6 @@ export function CountryDetail() {
             <p style={{ fontSize: '12px', color: 'var(--text-3)' }}>No data</p>
           )}
         </div>
-
       </div>
 
       {/* Map */}

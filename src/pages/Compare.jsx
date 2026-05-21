@@ -46,7 +46,7 @@ function WeatherBadge({ lat, lng }) {
 
 function Selector({ label, value, onChange, countries }) {
   return (
-    <div style={{ flex: 1 }}>
+    <div style={{ flex: 1, minWidth: 0 }}>
       <p style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: '9px',
@@ -93,9 +93,8 @@ function CompareRow({ label, icon, valA, valB, winner }) {
       alignItems: 'center',
       gap: '16px',
       padding: '12px 0',
-      borderBottom: '0.5px solid var(--border)',
     }}>
-      <p style={{
+      <p className="compare-table-val" style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: '12px',
         textAlign: 'right',
@@ -116,7 +115,7 @@ function CompareRow({ label, icon, valA, valB, winner }) {
           {label}
         </span>
       </div>
-      <p style={{
+      <p className="compare-table-val" style={{
         fontFamily: "'IBM Plex Mono', monospace",
         fontSize: '12px',
         textAlign: 'left',
@@ -222,7 +221,7 @@ export function Compare() {
       {loading ? (
         <div style={{ height: '52px', borderRadius: '6px', background: 'var(--surface)', marginBottom: '24px' }} />
       ) : (
-        <div style={{ display: 'flex', gap: '16px', marginBottom: '28px' }}>
+        <div className="mobile-stack" style={{ display: 'flex', gap: '16px', marginBottom: '28px' }}>
           <Selector label="Country A" value={codeA} onChange={setCodeA} countries={countries} />
           <Selector label="Country B" value={codeB} onChange={setCodeB} countries={countries} />
         </div>
@@ -231,7 +230,7 @@ export function Compare() {
       {/* Flags + weather */}
       {countryA && countryB && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+          <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
             {[countryA, countryB].map((c, i) => (
               <div key={i} style={{
                 background: 'var(--surface)',

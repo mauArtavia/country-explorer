@@ -8,6 +8,7 @@ import { useTheme } from '../hooks/useTheme'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
+import { SkeletonCard } from '../components/Skeleton'
 import { GitCompare, Bookmark, Sun, Moon } from 'lucide-react'
 
 export function Home() {
@@ -86,8 +87,6 @@ export function Home() {
         </div>
 
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-
-          {/* Theme toggle */}
           <button
             onClick={toggle}
             style={{
@@ -116,7 +115,6 @@ export function Home() {
             {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-          {/* Visited */}
           <button
             onClick={() => navigate('/visited')}
             style={{
@@ -159,7 +157,6 @@ export function Home() {
             )}
           </button>
 
-          {/* Compare */}
           <button
             onClick={() => navigate('/compare')}
             style={{
@@ -218,12 +215,7 @@ export function Home() {
       {loading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
           {Array.from({ length: 15 }).map((_, i) => (
-            <div key={i} style={{
-              height: '200px',
-              borderRadius: '8px',
-              background: 'var(--surface)',
-              opacity: 0.6,
-            }} />
+            <SkeletonCard key={i} />
           ))}
         </div>
       ) : (
@@ -248,12 +240,7 @@ export function Home() {
               }}
             >
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} style={{
-                  height: '200px',
-                  borderRadius: '8px',
-                  background: 'var(--surface)',
-                  opacity: 0.4,
-                }} />
+                <SkeletonCard key={i} />
               ))}
             </div>
           )}

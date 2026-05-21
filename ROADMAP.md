@@ -2,17 +2,17 @@
 
 ## v1.1 · Performance & UX
 
-- [ ] **Paginación / scroll infinito** — Home carga 250 países de golpe, lo cual es innecesario. Implementar `slice` con un botón "load more" o un `IntersectionObserver` para scroll infinito.
-- [ ] **Sorting en Home** — agregar un selector para ordenar por nombre (A→Z), población (mayor a menor) y área. Va junto al `RegionFilter`, mismo estilo mono.
-- [ ] **Debounce en SearchBar** — el filtro corre en cada keystroke. Agregar un debounce de ~200ms para no recalcular `useMemo` en cada letra.
+- [X] **Paginación / scroll infinito** — Home carga 250 países de golpe, lo cual es innecesario. Implementar `slice` con un botón "load more" o un `IntersectionObserver` para scroll infinito.
+- [X] **Sorting en Home** — agregar un selector para ordenar por nombre (A→Z), población (mayor a menor) y área. Va junto al `RegionFilter`, mismo estilo mono.
+- [X] **Debounce en SearchBar** — el filtro corre en cada keystroke. Agregar un debounce de ~200ms para no recalcular `useMemo` en cada letra.
 
 ---
 
 ## v1.2 · Features nuevas
 
-- [ ] **Mapa interactivo con Leaflet** — agregar `react-leaflet` y mostrar un mapa en `CountryDetail` centrado en las coordenadas del país. Click en el mapa navega al país correspondiente desde Home.
-- [ ] **Países vecinos (borders)** — REST Countries devuelve `borders` (array de códigos). En `CountryDetail`, mostrar los países limítrofes como chips clickeables que navegan a ese país.
-- [ ] **Modo oscuro / claro toggle** — agregar un botón en el header que intercambie entre Cartographic Dark y una variante light (crema + verde oscuro invertido).
+- [X] **Mapa interactivo con Leaflet** — agregar `react-leaflet` y mostrar un mapa en `CountryDetail` centrado en las coordenadas del país. Click en el mapa navega al país correspondiente desde Home.
+- [X] **Países vecinos (borders)** — REST Countries devuelve `borders` (array de códigos). En `CountryDetail`, mostrar los países limítrofes como chips clickeables que navegan a ese país.
+- [X] **Modo oscuro / claro toggle** — agregar un botón en el header que intercambie entre Cartographic Dark y una variante light (crema + verde oscuro invertido).
 
 ---
 
