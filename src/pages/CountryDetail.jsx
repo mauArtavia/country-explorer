@@ -5,6 +5,8 @@ import { useExchange } from '../hooks/useExchange'
 import { useVisited } from '../hooks/useVisited'
 import { fetchCountryByCode } from '../services/api'
 import { ArrowLeft, Wind, CheckCircle, Circle } from 'lucide-react'
+import { CountryMap } from '../components/CountryMap'
+import { BorderCountries } from '../components/BorderCountries'
 
 function formatPopulation(n) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
@@ -46,6 +48,21 @@ function StatCard({ label, value }) {
         {value}
       </p>
     </div>
+  )
+}
+
+function SectionLabel({ children }) {
+  return (
+    <p style={{
+      fontFamily: "'IBM Plex Mono', monospace",
+      fontSize: '9px',
+      color: 'var(--text-3)',
+      letterSpacing: '1px',
+      textTransform: 'uppercase',
+      marginBottom: '12px',
+    }}>
+      {children}
+    </p>
   )
 }
 
@@ -108,6 +125,13 @@ export function CountryDetail() {
     : '—'
   const languages = country.languages ? Object.values(country.languages).join(', ') : '—'
   const visited   = isVisited(country.cca2)
+
+  const widget = {
+    background: 'var(--surface)',
+    border: '0.5px solid var(--border)',
+    borderRadius: '6px',
+    padding: '16px',
+  }
 
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto', padding: '40px 24px' }}>
@@ -183,12 +207,8 @@ export function CountryDetail() {
           fontFamily: "'IBM Plex Mono', monospace",
           padding: '7px 16px',
           borderRadius: '4px',
-          border: visited
-            ? '0.5px solid var(--green)'
-            : '0.5px solid var(--border)',
-          background: visited
-            ? 'rgba(42, 107, 74, 0.12)'
-            : 'transparent',
+          border: visited ? '0.5px solid var(--green)' : '0.5px solid var(--border)',
+          background: visited ? 'rgba(42, 107, 74, 0.12)' : 'transparent',
           color: visited ? '#4CAF82' : 'var(--text-3)',
           cursor: 'pointer',
           marginBottom: '28px',
@@ -214,23 +234,8 @@ export function CountryDetail() {
       </div>
 
       {/* Languages */}
-      <div style={{
-        background: 'var(--surface)',
-        border: '0.5px solid var(--border)',
-        borderRadius: '6px',
-        padding: '14px 16px',
-        marginBottom: '16px',
-      }}>
-        <p style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: '9px',
-          color: 'var(--text-3)',
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          marginBottom: '6px',
-        }}>
-          Languages
-        </p>
+      <div style={{ ...widget, marginBottom: '8px' }}>
+        <SectionLabel>Languages</SectionLabel>
         <p style={{
           fontFamily: "'IBM Plex Sans', sans-serif",
           fontSize: '13px',
@@ -242,25 +247,11 @@ export function CountryDetail() {
       </div>
 
       {/* Weather + Exchange */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
 
         {/* Weather */}
-        <div style={{
-          background: 'var(--surface)',
-          border: '0.5px solid var(--border)',
-          borderRadius: '6px',
-          padding: '16px',
-        }}>
-          <p style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: '9px',
-            color: 'var(--text-3)',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            marginBottom: '12px',
-          }}>
-            Weather now
-          </p>
+        <div style={widget}>
+          <SectionLabel>Weather now</SectionLabel>
           {wLoading ? (
             <div style={{ height: '48px', borderRadius: '4px', background: 'var(--surface2)' }} />
           ) : weather ? (
@@ -310,22 +301,8 @@ export function CountryDetail() {
         </div>
 
         {/* Exchange */}
-        <div style={{
-          background: 'var(--surface)',
-          border: '0.5px solid var(--border)',
-          borderRadius: '6px',
-          padding: '16px',
-        }}>
-          <p style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: '9px',
-            color: 'var(--text-3)',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            marginBottom: '12px',
-          }}>
-            Exchange rates
-          </p>
+        <div style={widget}>
+          <SectionLabel>Exchange rates</SectionLabel>
           {eLoading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ height: '14px', borderRadius: '3px', background: 'var(--surface2)' }} />
@@ -366,6 +343,19 @@ export function CountryDetail() {
         </div>
 
       </div>
+
+      {/* Map */}
+      <div style={{ ...widget, marginBottom: '8px' }}>
+        <SectionLabel>Location</SectionLabel>
+        <CountryMap lat={lat} lng={lng} name={name} />
+      </div>
+
+      {/* Borders */}
+      <div style={widget}>
+        <SectionLabel>Bordering countries</SectionLabel>
+        <BorderCountries borders={country.borders} />
+      </div>
+
     </div>
   )
 }

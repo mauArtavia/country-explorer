@@ -4,14 +4,16 @@ import { useCountry } from '../hooks/useCountry'
 import { useVisited } from '../hooks/useVisited'
 import { useDebounce } from '../hooks/useDebounce'
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll'
+import { useTheme } from '../hooks/useTheme'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
-import { GitCompare, Bookmark } from 'lucide-react'
+import { GitCompare, Bookmark, Sun, Moon } from 'lucide-react'
 
 export function Home() {
   const { countries, loading, error } = useCountry()
   const { visited } = useVisited()
+  const { theme, toggle } = useTheme()
   const [query, setQuery]   = useState('')
   const [region, setRegion] = useState('All')
   const [sortBy, setSortBy] = useState('name')
@@ -83,7 +85,38 @@ export function Home() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggle}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '34px',
+              height: '34px',
+              borderRadius: '4px',
+              border: '0.5px solid var(--border)',
+              background: 'transparent',
+              color: 'var(--text-3)',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+              flexShrink: 0,
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--border2)'
+              e.currentTarget.style.color = 'var(--text-2)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)'
+              e.currentTarget.style.color = 'var(--text-3)'
+            }}
+          >
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+
+          {/* Visited */}
           <button
             onClick={() => navigate('/visited')}
             style={{
@@ -125,6 +158,8 @@ export function Home() {
               </span>
             )}
           </button>
+
+          {/* Compare */}
           <button
             onClick={() => navigate('/compare')}
             style={{
