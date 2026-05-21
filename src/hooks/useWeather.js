@@ -4,7 +4,7 @@ import { fetchWeather, weatherCodeToText } from '../services/api'
 export function useWeather(lat, lng) {
   const [weather, setWeather] = useState(null)
   const [loading, setLoading] = useState(false)
-  cosnt [error, setError] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (lat == null || lng == null) return
