@@ -18,9 +18,9 @@
 
 ## v1.3 · Mobile & Polish
 
-- [ ] **Responsive mobile** — revisar las cuatro páginas en viewport de 375px. El grid de Home y la tabla de Compare necesitan ajustes específicos.
-- [ ] **Page transitions** — animación de entrada/salida entre rutas con `react-transition-group` o CSS puro. Algo sutil: fade + slight translateY.
-- [ ] **Skeleton loaders elaborados** — reemplazar los divs con `animate-pulse` por skeletons que imiten la forma real de cada componente (flag ratio, líneas de texto, badges).
+- [X] **Responsive mobile** — revisar las cuatro páginas en viewport de 375px. El grid de Home y la tabla de Compare necesitan ajustes específicos.
+- [X] **Page transitions** — animación de entrada/salida entre rutas con `react-transition-group` o CSS puro. Algo sutil: fade + slight translateY.
+- [X] **Skeleton loaders elaborados** — reemplazar los divs con `animate-pulse` por skeletons que imiten la forma real de cada componente (flag ratio, líneas de texto, badges).
 
 ---
 
