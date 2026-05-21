@@ -4,7 +4,7 @@ import { useCountry } from '../hooks/useCountry'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
-import { Globe } from 'lucide-react'
+import { Globe, GitCompare } from 'lucide-react'
 
 export function Home() {
   const { countries, loading, error } = useCountry()
@@ -34,16 +34,26 @@ export function Home() {
     <div className="max-w-7xl mx-auto px-4 py-10">
 
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <Globe size={28} className="text-neutral-400" />
-        <div>
-          <h1 className="text-2xl font-medium text-neutral-100 leading-none">
-            Country Explorer
-          </h1>
-          <p className="text-sm text-neutral-500 mt-0.5">
-            {loading ? 'Loading…' : `${filtered.length} countries`}
-          </p>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <Globe size={28} className="text-neutral-400" />
+          <div>
+            <h1 className="text-2xl font-medium text-neutral-100 leading-none">
+              Country Explorer
+            </h1>
+            <p className="text-sm text-neutral-500 mt-0.5">
+              {loading ? 'Loading…' : `${filtered.length} countries`}
+            </p>
+          </div>
         </div>
+        <button
+          onClick={() => navigate('/compare')}
+          className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
+                     border border-neutral-800 text-neutral-400
+                     hover:border-neutral-600 hover:text-neutral-200 transition-colors"
+        >
+          <GitCompare size={16} /> Compare
+        </button>
       </div>
 
       {/* Controls */}
