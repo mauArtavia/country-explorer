@@ -16,73 +16,188 @@ export function Visited() {
   }, [visited, countries])
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
+    <div style={{ maxWidth: '680px', margin: '0 auto', padding: '40px 24px' }}>
 
       {/* Back */}
       <button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-sm text-neutral-500
-                   hover:text-neutral-300 transition-colors mb-8"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '11px',
+          fontFamily: "'IBM Plex Mono', monospace",
+          color: 'var(--text-3)',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          marginBottom: '32px',
+          letterSpacing: '0.5px',
+          transition: 'color 0.15s',
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--text-2)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}
       >
-        <ArrowLeft size={16} /> Back
+        <ArrowLeft size={14} /> back
       </button>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-medium text-neutral-100">Visited</h1>
-          <p className="text-sm text-neutral-500 mt-0.5">
-            {visitedCountries.length} {visitedCountries.length === 1 ? 'country' : 'countries'}
-          </p>
-        </div>
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: '32px',
+          fontWeight: 400,
+          color: 'var(--text)',
+          lineHeight: 1.1,
+        }}>
+          Visited <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>countries</em>
+        </h1>
+        <p style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '10px',
+          color: 'var(--text-3)',
+          marginTop: '8px',
+          letterSpacing: '0.5px',
+        }}>
+          {visitedCountries.length} {visitedCountries.length === 1 ? 'country' : 'countries'}
+        </p>
       </div>
 
       {/* Empty state */}
       {visitedCountries.length === 0 && (
-        <div className="text-center py-20">
-          <Globe size={32} className="text-neutral-700 mx-auto mb-3" />
-          <p className="text-neutral-600 text-sm">No visited countries yet.</p>
-          <p className="text-neutral-700 text-xs mt-1">
-            Open any country and mark it as visited.
+        <div style={{
+          textAlign: 'center',
+          padding: '80px 0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          <Globe size={28} style={{ color: 'var(--border2)' }} />
+          <p style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '11px',
+            color: 'var(--text-3)',
+            letterSpacing: '0.5px',
+          }}>
+            no visited countries yet
+          </p>
+          <p style={{
+            fontFamily: "'IBM Plex Sans', sans-serif",
+            fontSize: '12px',
+            fontWeight: 300,
+            color: 'var(--text-3)',
+          }}>
+            open any country and mark it as visited
           </p>
         </div>
       )}
 
       {/* List */}
-      <div className="space-y-3">
-        {visitedCountries.map(country => (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        {visitedCountries.map((country, i) => (
           <div
             key={country.cca2}
-            className="flex items-center gap-4 bg-neutral-900 border border-neutral-800
-                       rounded-2xl px-4 py-3 group"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              background: 'var(--surface)',
+              border: '0.5px solid var(--border)',
+              borderRadius: '6px',
+              padding: '12px 14px',
+            }}
           >
+            {/* Index */}
+            <span style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: '10px',
+              color: 'var(--text-3)',
+              minWidth: '20px',
+            }}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+
+            {/* Flag */}
             <img
               src={country.flags?.svg ?? country.flags?.png}
               alt={country.name.common}
-              className="w-12 h-8 object-cover rounded-md flex-shrink-0"
+              style={{
+                width: '48px',
+                height: '32px',
+                objectFit: 'cover',
+                borderRadius: '3px',
+                border: '0.5px solid var(--border)',
+                flexShrink: 0,
+              }}
             />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-neutral-100 truncate">
+
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontWeight: 500,
+                fontSize: '13px',
+                color: 'var(--text)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
                 {country.name.common}
               </p>
-              <p className="text-xs text-neutral-500">
+              <p style={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontSize: '10px',
+                color: 'var(--text-3)',
+                marginTop: '2px',
+              }}>
                 {country.capital?.[0] ?? '—'} · {country.region}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+
+            {/* Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button
                 onClick={() => navigate(`/country/${country.cca2}`)}
-                className="text-xs text-neutral-600 hover:text-neutral-300
-                           transition-colors px-3 py-1.5 rounded-lg
-                           border border-neutral-800 hover:border-neutral-600"
+                style={{
+                  fontSize: '10px',
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  padding: '6px 14px',
+                  borderRadius: '3px',
+                  border: '0.5px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--text-3)',
+                  cursor: 'pointer',
+                  letterSpacing: '0.5px',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'var(--border2)'
+                  e.currentTarget.style.color = 'var(--text-2)'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'var(--border)'
+                  e.currentTarget.style.color = 'var(--text-3)'
+                }}
               >
-                View
+                view
               </button>
               <button
                 onClick={() => removeVisited(country.cca2)}
-                className="text-neutral-700 hover:text-red-400 transition-colors p-1.5"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-3)',
+                  padding: '4px',
+                  transition: 'color 0.15s',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#E24B4A'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}
               >
-                <Trash2 size={14} />
+                <Trash2 size={13} />
               </button>
             </div>
           </div>

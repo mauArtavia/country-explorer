@@ -1,29 +1,43 @@
-import { Search, X } from "lucide-react";
+import { Search, X } from 'lucide-react'
 
 export function SearchBar({ value, onChange, onClear }) {
   return (
     <div className="relative flex items-center">
       <Search
-        size={18}
-        className="absolute left-4 text-neutral-500 pointer-events-none"
+        size={16}
+        className="absolute left-4 pointer-events-none"
+        style={{ color: 'var(--text-3)' }}
       />
       <input
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
-        placeholder="Search countries, capitals..."
-        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl
-                   pl-11 pr-10 py-3 text-sm text-neutral-100
-                   placeholder:text-neutral-600
-                   focus:outline-none focus:border-neutral-600
-                   transition-colors"
+        placeholder="Search countries, capitals, regions…"
+        style={{
+          width: '100%',
+          background: 'var(--surface)',
+          border: '0.5px solid var(--border)',
+          borderRadius: '6px',
+          padding: '11px 40px',
+          fontSize: '13px',
+          color: 'var(--text)',
+          fontFamily: "'IBM Plex Sans', sans-serif",
+          fontWeight: 300,
+          outline: 'none',
+          transition: 'border-color 0.15s',
+        }}
+        onFocus={e => e.target.style.borderColor = 'var(--border2)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border)'}
       />
       {value && (
         <button
           onClick={onClear}
-          className="absolute right-3 text-neutral-500 hover:text-neutral-300 transition-colors"
+          className="absolute right-3 transition-colors"
+          style={{ color: 'var(--text-3)' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--text-2)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}
         >
-          <X size={16} />
+          <X size={14} />
         </button>
       )}
     </div>

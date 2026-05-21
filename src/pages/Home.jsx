@@ -5,7 +5,7 @@ import { useVisited } from '../hooks/useVisited'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
-import { Globe, GitCompare, Bookmark } from 'lucide-react'
+import { GitCompare, Bookmark } from 'lucide-react'
 
 export function Home() {
   const { countries, loading, error } = useCountry()
@@ -27,73 +27,135 @@ export function Home() {
   }, [countries, query, region])
 
   if (error) return (
-    <div className="flex items-center justify-center min-h-screen text-neutral-500">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: 'var(--text-3)', fontSize: '13px' }}>
       Failed to load countries. Check your connection.
     </div>
   )
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 24px' }}>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <Globe size={28} className="text-neutral-400" />
-          <div>
-            <h1 className="text-2xl font-medium text-neutral-100 leading-none">
-              Country Explorer
-            </h1>
-            <p className="text-sm text-neutral-500 mt-0.5">
-              {loading ? 'Loading…' : `${filtered.length} countries`}
-            </p>
-          </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '32px' }}>
+        <div>
+          <p style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '9px',
+            color: 'var(--text-3)',
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            marginBottom: '4px',
+          }}>
+            world atlas
+          </p>
+          <h1 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: '36px',
+            fontWeight: 400,
+            color: 'var(--text)',
+            lineHeight: 1,
+          }}>
+            Country{' '}
+            <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Explorer</em>
+          </h1>
+          <p style={{
+            fontFamily: "'IBM Plex Mono', monospace",
+            fontSize: '10px',
+            color: 'var(--text-3)',
+            marginTop: '8px',
+            letterSpacing: '0.5px',
+          }}>
+            {loading ? 'loading…' : `${filtered.length} countries`}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => navigate('/visited')}
-            className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
-                       border border-neutral-800 text-neutral-400
-                       hover:border-neutral-600 hover:text-neutral-200 transition-colors"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '7px',
+              fontSize: '11px',
+              fontFamily: "'IBM Plex Mono', monospace",
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: '0.5px solid var(--border)',
+              background: 'transparent',
+              color: 'var(--text-3)',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--border2)'
+              e.currentTarget.style.color = 'var(--text-2)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)'
+              e.currentTarget.style.color = 'var(--text-3)'
+            }}
           >
-            <Bookmark size={16} />
-            Visited
+            <Bookmark size={13} />
+            visited
             {visited.length > 0 && (
-              <span className="text-xs bg-neutral-800 text-neutral-300
-                               px-1.5 py-0.5 rounded-full">
+              <span style={{
+                fontSize: '9px',
+                background: 'var(--accent-dim)',
+                color: 'var(--accent)',
+                border: '0.5px solid rgba(193,127,60,0.3)',
+                padding: '1px 6px',
+                borderRadius: '2px',
+                fontFamily: "'IBM Plex Mono', monospace",
+              }}>
                 {visited.length}
               </span>
             )}
           </button>
           <button
             onClick={() => navigate('/compare')}
-            className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
-                       border border-neutral-800 text-neutral-400
-                       hover:border-neutral-600 hover:text-neutral-200 transition-colors"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '7px',
+              fontSize: '11px',
+              fontFamily: "'IBM Plex Mono', monospace",
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: '0.5px solid var(--accent)',
+              background: 'var(--accent-dim)',
+              color: 'var(--accent)',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(193,127,60,0.2)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--accent-dim)'}
           >
-            <GitCompare size={16} /> Compare
+            <GitCompare size={13} />
+            compare
           </button>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="flex flex-col gap-4 mb-8">
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          onClear={() => setQuery('')}
-        />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+        <SearchBar value={query} onChange={setQuery} onClear={() => setQuery('')} />
         <RegionFilter active={region} onChange={setRegion} />
       </div>
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
           {Array.from({ length: 15 }).map((_, i) => (
-            <div key={i} className="h-56 rounded-2xl bg-neutral-900 animate-pulse" />
+            <div key={i} style={{
+              height: '200px',
+              borderRadius: '8px',
+              background: 'var(--surface)',
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }} />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px' }}>
           {filtered.map(country => (
             <CountryCard
               key={country.cca2}

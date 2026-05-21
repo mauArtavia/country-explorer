@@ -7,11 +7,36 @@ export function RegionFilter({ active, onChange }) {
         <button
           key={region}
           onClick={() => onChange(region)}
-          className={`text-xs px-3 py-1.5 rounded-full border transition-colors
-            ${active === region
-              ? 'bg-neutral-100 text-neutral-900 border-neutral-100'
-              : 'bg-transparent text-neutral-500 border-neutral-800 hover:border-neutral-600 hover:text-neutral-300'
-            }`}
+          style={{
+            fontSize: '10px',
+            fontFamily: "'IBM Plex Mono', monospace",
+            padding: '4px 12px',
+            borderRadius: '3px',
+            border: active === region
+              ? '0.5px solid var(--accent)'
+              : '0.5px solid var(--border)',
+            background: active === region
+              ? 'var(--accent-dim)'
+              : 'transparent',
+            color: active === region
+              ? 'var(--accent)'
+              : 'var(--text-3)',
+            cursor: 'pointer',
+            letterSpacing: '0.5px',
+            transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => {
+            if (active !== region) {
+              e.currentTarget.style.borderColor = 'var(--border2)'
+              e.currentTarget.style.color = 'var(--text-2)'
+            }
+          }}
+          onMouseLeave={e => {
+            if (active !== region) {
+              e.currentTarget.style.borderColor = 'var(--border)'
+              e.currentTarget.style.color = 'var(--text-3)'
+            }
+          }}
         >
           {region}
         </button>

@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCountry } from '../hooks/useCountry'
 import { useWeather } from '../hooks/useWeather'
 import { ArrowLeft, Users, Globe, MapPin, Landmark, TrendingUp } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
 
 function formatPopulation(n) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
@@ -14,58 +14,117 @@ function formatArea(n) {
   return n ? n.toLocaleString() + ' km²' : '—'
 }
 
+function WeatherBadge({ lat, lng }) {
+  const { weather, loading } = useWeather(lat, lng)
+  if (loading) return (
+    <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: '10px', color: 'var(--text-3)' }}>
+      loading…
+    </span>
+  )
+  if (!weather) return <span style={{ color: 'var(--text-3)', fontSize: '10px' }}>—</span>
+  return (
+    <div>
+      <span style={{
+        fontFamily: "'Playfair Display', serif",
+        fontSize: '28px',
+        fontWeight: 400,
+        color: 'var(--text)',
+      }}>
+        {weather.temp}°
+      </span>
+      <p style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '10px',
+        color: 'var(--text-3)',
+        marginTop: '2px',
+      }}>
+        {weather.description}
+      </p>
+    </div>
+  )
+}
+
 function Selector({ label, value, onChange, countries }) {
   return (
-    <div className="flex-1">
-      <p className="text-xs text-neutral-500 uppercase tracking-wider mb-2">{label}</p>
+    <div style={{ flex: 1 }}>
+      <p style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '9px',
+        color: 'var(--text-3)',
+        letterSpacing: '1.5px',
+        textTransform: 'uppercase',
+        marginBottom: '8px',
+      }}>
+        {label}
+      </p>
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl
-                   px-4 py-3 text-sm text-neutral-100
-                   focus:outline-none focus:border-neutral-600 transition-colors"
+        style={{
+          width: '100%',
+          background: 'var(--surface)',
+          border: '0.5px solid var(--border)',
+          borderRadius: '6px',
+          padding: '10px 14px',
+          fontSize: '12px',
+          fontFamily: "'IBM Plex Sans', sans-serif",
+          color: value ? 'var(--text)' : 'var(--text-3)',
+          cursor: 'pointer',
+          outline: 'none',
+        }}
       >
-        <option value="">Select a country…</option>
+        <option value="">select a country…</option>
         {countries
           .slice()
           .sort((a, b) => a.name.common.localeCompare(b.name.common))
           .map(c => (
             <option key={c.cca2} value={c.cca2}>{c.name.common}</option>
-          ))
-        }
+          ))}
       </select>
-    </div>
-  )
-}
-
-function WeatherBadge({ lat, lng }) {
-  const { weather, loading } = useWeather(lat, lng)
-  if (loading) return <span className="text-neutral-600 text-sm">Loading…</span>
-  if (!weather) return <span className="text-neutral-600 text-sm">—</span>
-  return (
-    <div>
-      <span className="text-2xl font-light text-neutral-100">{weather.temp}°C</span>
-      <p className="text-xs text-neutral-500 mt-0.5">{weather.description}</p>
     </div>
   )
 }
 
 function CompareRow({ label, icon, valA, valB, winner }) {
   return (
-    <div className="grid grid-cols-3 items-center gap-4 py-3
-                    border-b border-neutral-800 last:border-0">
-      <div className={`text-sm text-right pr-2 font-medium
-        ${winner === 'A' ? 'text-neutral-100' : 'text-neutral-500'}`}>
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr auto 1fr',
+      alignItems: 'center',
+      gap: '16px',
+      padding: '12px 0',
+      borderBottom: '0.5px solid var(--border)',
+    }}>
+      <p style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '12px',
+        textAlign: 'right',
+        color: winner === 'A' ? 'var(--accent)' : 'var(--text-2)',
+        fontWeight: winner === 'A' ? 500 : 400,
+      }}>
         {valA}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '80px' }}>
+        <span style={{ color: 'var(--text-3)' }}>{icon}</span>
+        <span style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '9px',
+          color: 'var(--text-3)',
+          letterSpacing: '0.5px',
+          textTransform: 'uppercase',
+        }}>
+          {label}
+        </span>
       </div>
-      <div className="flex flex-col items-center gap-1">
-        <div className="text-neutral-600">{icon}</div>
-        <span className="text-xs text-neutral-600 text-center">{label}</span>
-      </div>
-      <div className={`text-sm text-left pl-2 font-medium
-        ${winner === 'B' ? 'text-neutral-100' : 'text-neutral-500'}`}>
+      <p style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '12px',
+        textAlign: 'left',
+        color: winner === 'B' ? 'var(--accent)' : 'var(--text-2)',
+        fontWeight: winner === 'B' ? 500 : 400,
+      }}>
         {valB}
-      </div>
+      </p>
     </div>
   )
 }
@@ -84,93 +143,136 @@ export function Compare() {
     return [
       {
         label: 'Population',
-        icon: <Users size={14} />,
+        icon: <Users size={13} />,
         valA: formatPopulation(countryA.population),
         valB: formatPopulation(countryB.population),
         winner: countryA.population > countryB.population ? 'A'
-              : countryB.population > countryA.population ? 'B' : null
+              : countryB.population > countryA.population ? 'B' : null,
       },
       {
         label: 'Area',
-        icon: <Globe size={14} />,
+        icon: <Globe size={13} />,
         valA: formatArea(countryA.area),
         valB: formatArea(countryB.area),
         winner: countryA.area > countryB.area ? 'A'
-              : countryB.area > countryA.area ? 'B' : null
+              : countryB.area > countryA.area ? 'B' : null,
       },
       {
         label: 'Capital',
-        icon: <MapPin size={14} />,
+        icon: <MapPin size={13} />,
         valA: countryA.capital?.[0] ?? '—',
         valB: countryB.capital?.[0] ?? '—',
-        winner: null
+        winner: null,
       },
       {
         label: 'Currency',
-        icon: <Landmark size={14} />,
+        icon: <Landmark size={13} />,
         valA: Object.keys(countryA.currencies ?? {})[0] ?? '—',
         valB: Object.keys(countryB.currencies ?? {})[0] ?? '—',
-        winner: null
+        winner: null,
       },
       {
         label: 'Region',
-        icon: <TrendingUp size={14} />,
+        icon: <TrendingUp size={13} />,
         valA: countryA.region,
         valB: countryB.region,
-        winner: null
+        winner: null,
       },
     ]
   }, [countryA, countryB])
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
+    <div style={{ maxWidth: '680px', margin: '0 auto', padding: '40px 24px' }}>
 
       {/* Back */}
       <button
         onClick={() => navigate('/')}
-        className="flex items-center gap-2 text-sm text-neutral-500
-                   hover:text-neutral-300 transition-colors mb-8"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '11px',
+          fontFamily: "'IBM Plex Mono', monospace",
+          color: 'var(--text-3)',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          marginBottom: '32px',
+          letterSpacing: '0.5px',
+          transition: 'color 0.15s',
+        }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--text-2)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-3)'}
       >
-        <ArrowLeft size={16} /> Back
+        <ArrowLeft size={14} /> back
       </button>
 
-      <h1 className="text-2xl font-medium text-neutral-100 mb-8">Compare countries</h1>
+      {/* Title */}
+      <h1 style={{
+        fontFamily: "'Playfair Display', serif",
+        fontSize: '32px',
+        fontWeight: 400,
+        color: 'var(--text)',
+        marginBottom: '28px',
+      }}>
+        Compare <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>countries</em>
+      </h1>
 
       {/* Selectors */}
       {loading ? (
-        <div className="h-12 rounded-xl bg-neutral-900 animate-pulse mb-6" />
+        <div style={{ height: '52px', borderRadius: '6px', background: 'var(--surface)', marginBottom: '24px' }} />
       ) : (
-        <div className="flex gap-4 mb-8">
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '28px' }}>
           <Selector label="Country A" value={codeA} onChange={setCodeA} countries={countries} />
           <Selector label="Country B" value={codeB} onChange={setCodeB} countries={countries} />
         </div>
       )}
 
-      {/* Flags preview */}
+      {/* Flags + weather */}
       {countryA && countryB && (
         <>
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
             {[countryA, countryB].map((c, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden border border-neutral-800">
+              <div key={i} style={{
+                background: 'var(--surface)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '8px',
+                overflow: 'hidden',
+              }}>
                 <img
                   src={c.flags?.svg ?? c.flags?.png}
                   alt={c.name.common}
-                  className="w-full h-28 object-cover"
+                  style={{ width: '100%', height: '110px', objectFit: 'cover' }}
                 />
-                <div className="px-4 py-3 bg-neutral-900">
-                  <p className="text-sm font-medium text-neutral-100">{c.name.common}</p>
-                  <div className="mt-1">
-                    <WeatherBadge lat={c.latlng?.[0]} lng={c.latlng?.[1]} />
-                  </div>
+                <div style={{ padding: '12px 14px' }}>
+                  <p style={{
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                    fontWeight: 500,
+                    fontSize: '13px',
+                    color: 'var(--text)',
+                    marginBottom: '8px',
+                  }}>
+                    {c.name.common}
+                  </p>
+                  <WeatherBadge lat={c.latlng?.[0]} lng={c.latlng?.[1]} />
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Comparison table */}
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl px-5 py-2">
-            {rows.map(row => (
-              <CompareRow key={row.label} {...row} />
+          {/* Comparison rows */}
+          <div style={{
+            background: 'var(--surface)',
+            border: '0.5px solid var(--border)',
+            borderRadius: '8px',
+            padding: '4px 20px',
+          }}>
+            {rows.map((row, i) => (
+              <div key={row.label} style={{
+                borderBottom: i === rows.length - 1 ? 'none' : '0.5px solid var(--border)',
+              }}>
+                <CompareRow {...row} />
+              </div>
             ))}
           </div>
         </>
@@ -178,8 +280,15 @@ export function Compare() {
 
       {/* Empty state */}
       {(!countryA || !countryB) && !loading && (
-        <div className="text-center py-16 text-neutral-600 text-sm">
-          Select two countries to compare them
+        <div style={{
+          textAlign: 'center',
+          padding: '64px 0',
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '11px',
+          color: 'var(--text-3)',
+          letterSpacing: '0.5px',
+        }}>
+          select two countries to compare
         </div>
       )}
 
