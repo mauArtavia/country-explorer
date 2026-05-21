@@ -1,13 +1,15 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCountry } from '../hooks/useCountry'
+import { useVisited } from '../hooks/useVisited'
 import { SearchBar } from '../components/SearchBar'
 import { RegionFilter } from '../components/RegionFilter'
 import { CountryCard } from '../components/CountryCard'
-import { Globe, GitCompare } from 'lucide-react'
+import { Globe, GitCompare, Bookmark } from 'lucide-react'
 
 export function Home() {
   const { countries, loading, error } = useCountry()
+  const { visited } = useVisited()
   const [query, setQuery]   = useState('')
   const [region, setRegion] = useState('All')
   const navigate = useNavigate()
@@ -46,14 +48,31 @@ export function Home() {
             </p>
           </div>
         </div>
-        <button
-          onClick={() => navigate('/compare')}
-          className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
-                     border border-neutral-800 text-neutral-400
-                     hover:border-neutral-600 hover:text-neutral-200 transition-colors"
-        >
-          <GitCompare size={16} /> Compare
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/visited')}
+            className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
+                       border border-neutral-800 text-neutral-400
+                       hover:border-neutral-600 hover:text-neutral-200 transition-colors"
+          >
+            <Bookmark size={16} />
+            Visited
+            {visited.length > 0 && (
+              <span className="text-xs bg-neutral-800 text-neutral-300
+                               px-1.5 py-0.5 rounded-full">
+                {visited.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => navigate('/compare')}
+            className="flex items-center gap-2 text-sm px-4 py-2 rounded-xl
+                       border border-neutral-800 text-neutral-400
+                       hover:border-neutral-600 hover:text-neutral-200 transition-colors"
+          >
+            <GitCompare size={16} /> Compare
+          </button>
+        </div>
       </div>
 
       {/* Controls */}
