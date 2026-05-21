@@ -15,6 +15,18 @@ export function Visited() {
       .filter(Boolean)
   }, [visited, countries])
 
+  const regions = useMemo(() =>
+    new Set(visitedCountries.map(c => c.region)).size
+  , [visitedCountries])
+
+  const topRegion = useMemo(() => {
+    if (!visitedCountries.length) return '—'
+    const counts = visitedCountries.reduce((acc, c) => ({
+      ...acc, [c.region]: (acc[c.region] ?? 0) + 1
+    }), {})
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
+  }, [visitedCountries])
+
   return (
     <div style={{ maxWidth: '680px', margin: '0 auto', padding: '40px 24px' }}>
 
@@ -61,6 +73,58 @@ export function Visited() {
         }}>
           {visitedCountries.length} {visitedCountries.length === 1 ? 'country' : 'countries'}
         </p>
+
+        {/* Stats */}
+        {visitedCountries.length > 0 && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '8px',
+            marginTop: '20px',
+          }}>
+            {[
+              {
+                label: 'of the world',
+                value: `${((visitedCountries.length / 195) * 100).toFixed(1)}%`,
+              },
+              {
+                label: 'regions covered',
+                value: `${regions} / 6`,
+              },
+              {
+                label: 'most visited',
+                value: topRegion,
+              },
+            ].map(({ label, value }) => (
+              <div key={label} style={{
+                background: 'var(--surface)',
+                border: '0.5px solid var(--border)',
+                borderRadius: '6px',
+                padding: '14px 16px',
+              }}>
+                <p style={{
+                  fontFamily: "'IBM Plex Mono', monospace",
+                  fontSize: '9px',
+                  color: 'var(--text-3)',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase',
+                  marginBottom: '6px',
+                }}>
+                  {label}
+                </p>
+                <p style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: '22px',
+                  fontWeight: 400,
+                  color: 'var(--accent)',
+                  lineHeight: 1,
+                }}>
+                  {value}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Empty state */}

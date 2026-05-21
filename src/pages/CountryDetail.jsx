@@ -4,7 +4,7 @@ import { useWeather } from '../hooks/useWeather'
 import { useExchange } from '../hooks/useExchange'
 import { useVisited } from '../hooks/useVisited'
 import { fetchCountryByCode } from '../services/api'
-import { ArrowLeft, Wind, CheckCircle, Circle } from 'lucide-react'
+import { ArrowLeft, Wind, CheckCircle, Circle, Share2, Check } from 'lucide-react'
 import { CountryMap } from '../components/CountryMap'
 import { BorderCountries } from '../components/BorderCountries'
 import { SkeletonDetailPage } from '../components/Skeleton'
@@ -74,6 +74,7 @@ export function CountryDetail() {
   const [country, setCountry] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState(null)
+  const [copied, setCopied]   = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -90,6 +91,13 @@ export function CountryDetail() {
   const { weather, loading: wLoading } = useWeather(lat, lng)
   const { rates,   loading: eLoading } = useExchange(currencyCode)
   const { isVisited, addVisited, removeVisited } = useVisited()
+
+  function handleShare() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   if (loading) return <SkeletonDetailPage />
   if (error) return (
@@ -181,29 +189,52 @@ export function CountryDetail() {
         {name}
       </h1>
 
-      {/* Visited button */}
-      <button
-        onClick={() => visited ? removeVisited(country.cca2) : addVisited(country.cca2)}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '7px',
-          fontSize: '11px',
-          fontFamily: "'IBM Plex Mono', monospace",
-          padding: '7px 16px',
-          borderRadius: '4px',
-          border: visited ? '0.5px solid var(--green)' : '0.5px solid var(--border)',
-          background: visited ? 'rgba(42, 107, 74, 0.12)' : 'transparent',
-          color: visited ? '#4CAF82' : 'var(--text-3)',
-          cursor: 'pointer',
-          marginBottom: '28px',
-          transition: 'all 0.15s',
-          letterSpacing: '0.5px',
-        }}
-      >
-        {visited ? <CheckCircle size={13} /> : <Circle size={13} />}
-        {visited ? 'visited' : 'mark as visited'}
-      </button>
+      {/* Visited + Share */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px' }}>
+        <button
+          onClick={() => visited ? removeVisited(country.cca2) : addVisited(country.cca2)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            fontSize: '11px',
+            fontFamily: "'IBM Plex Mono', monospace",
+            padding: '7px 16px',
+            borderRadius: '4px',
+            border: visited ? '0.5px solid var(--green)' : '0.5px solid var(--border)',
+            background: visited ? 'rgba(42, 107, 74, 0.12)' : 'transparent',
+            color: visited ? '#4CAF82' : 'var(--text-3)',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            letterSpacing: '0.5px',
+          }}
+        >
+          {visited ? <CheckCircle size={13} /> : <Circle size={13} />}
+          {visited ? 'visited' : 'mark as visited'}
+        </button>
+
+        <button
+          onClick={handleShare}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            fontSize: '11px',
+            fontFamily: "'IBM Plex Mono', monospace",
+            padding: '7px 16px',
+            borderRadius: '4px',
+            border: copied ? '0.5px solid var(--accent)' : '0.5px solid var(--border)',
+            background: copied ? 'var(--accent-dim)' : 'transparent',
+            color: copied ? 'var(--accent)' : 'var(--text-3)',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            letterSpacing: '0.5px',
+          }}
+        >
+          {copied ? <Check size={13} /> : <Share2 size={13} />}
+          {copied ? 'copied!' : 'share'}
+        </button>
+      </div>
 
       {/* Stats */}
       <div style={{
